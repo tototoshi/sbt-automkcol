@@ -1,8 +1,14 @@
+import de.johoop.jacoco4sbt._
+import JacocoPlugin._
+import eu.diversit.sbt.plugin.WebDavPlugin._
+
 sbtPlugin := true
+
+organization := "eu.diversit.sbt.plugin"
 
 name := "webdav4sbt"
 
-organization := "eu.diversit.sbt.plugin"
+version := "0.1"
 
 scalaVersion := "2.9.2"
 
@@ -13,3 +19,8 @@ libraryDependencies ++= Seq(
 )
 
 crossScalaVersions := Seq("2.9.2", "2.10.0")
+
+seq(WebDav.globalSettings : _*)
+
+seq(jacoco.settings : _*)
+

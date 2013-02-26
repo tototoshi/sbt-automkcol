@@ -21,6 +21,7 @@ object StringPath {
 object WebDavPlugin extends Plugin {
 
   trait WebDavKeys {
+    lazy val webdav = config("webdav")
     lazy val mkcol = TaskKey[Unit]("mkcol", "Make collections (folder) in remote WebDav location.")
   }
 
@@ -112,6 +113,7 @@ object WebDavPlugin extends Plugin {
      * if the collection does not exist yet.
      */
     def mkcolAction(organization: String, artifactName: String, version: String, crossScalaVersions: Seq[String], sbtVersion: String, publishTo: Option[Resolver], credentialsSet: Seq[Credentials], streams: TaskStreams[_]) = {
+      streams.log.info("WebDav: Check whether (new) collection need to be created.")
       val artifactPaths = createPaths(organization, artifactName, version, crossScalaVersions, sbtVersion)
       val artifactPathParts = artifactPaths map pathCollections
 
@@ -127,8 +129,13 @@ object WebDavPlugin extends Plugin {
       val cc = getCredentialsForHost(publishTo, credentialsSet)
       cc match {
         case Some(creds: DirectCredentials) => makeCollections(creds)
-        case _ => throw new MkColException("No credentials available to publish to WebDav")
+        case _ => {
+          streams.log.error("WebDav: No credentials available to publish to WebDav")
+          throw new MkColException("No credentials available to publish to WebDav")
+        }
       }
+
+      streams.log.info("WebDav: Done.")
     }
 
     case class MkColException(msg: String) extends RuntimeException(msg)
@@ -136,8 +143,11 @@ object WebDavPlugin extends Plugin {
 
   object WebDav extends MkCol with WebDavKeys {
     import sbt.Keys._
-    val settings = Seq(
-//      mkCol <<= () map mkColAction
+    val globalSettings = Seq(
+      mkcol <<= (organization, name, version, crossScalaVersions, sbtVersion, publishTo, credentials, streams) map mkcolAction,
+      publish <<= publish.dependsOn(mkcol)
     )
+
+    val scopedSettings = inConfig(webdav)(globalSettings)
   }
 }
