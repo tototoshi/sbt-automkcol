@@ -7,11 +7,10 @@ import sbt.{DirectCredentials, Credentials, JavaNet1Repository, MavenRepository}
 import sbt.std.Streams
 import com.typesafe.config.ConfigFactory
 
-class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues
-        with MkCol with WebDavConfig {
-
-  // Validate real values are set. If not, put a 'test.conf' file in classpath.
-  username should not startWith("fill")
+/**
+ * A sbt.Logger implementation for testing.
+ */
+trait TestLogger {
 
   val testLogger = new sbt.Logger {
     def trace(t: => Throwable) { println(t.getMessage) }
@@ -21,6 +20,16 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues
     import sbt.Level
     def log(level: Level.Value, message: => String) { println("%s: %s" format (level, message))}
   }
+}
+
+/**
+ * Test mkcol action.
+ */
+class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with TestLogger
+        with MkCol with WebDavConfig {
+
+  // Validate real values are set. If not, put a 'test.conf' file in classpath.
+  username should not startWith("fill")
 
   import StringPath._
 
@@ -28,12 +37,12 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues
     scenario("Create artifact paths for all crossScalaVersions") {
 
       val paths = createPaths("com.organization", "name", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2")
-      paths should contain ("/com/organization/name_2.9.2_0.12.2/1.0.1")
-      paths should contain ("/com/organization/name_2.10.0_0.12.2/1.0.1")
+      paths should contain ("/com/organization/name_2.9.2_0.12/1.0.1")
+      paths should contain ("/com/organization/name_2.10.0_0.12/1.0.1")
     }
 
     scenario("pathCollections should return all collections for path") {
-      pathCollections("/com/organization/name_2.10.0_0.12.2/1.0.1") should equal(List("com", "com/organization", "com/organization/name_2.10.0_0.12.2", "com/organization/name_2.10.0_0.12.2/1.0.1"))
+      pathCollections("/com/organization/name_2.10.0_0.12/1.0.1") should equal(List("com", "com/organization", "com/organization/name_2.10.0_0.12", "com/organization/name_2.10.0_0.12/1.0.1"))
     }
 
     scenario("Update paths with 'publishTo' location") {
@@ -125,8 +134,8 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues
 
       import com.googlecode.sardine._
       val sardine = SardineFactory.begin()
-      exists(sardine, webdavUrl / "test/org/case/testcase_2.9.2_0.12.2/1.0.1") should be(true)
-      exists(sardine, webdavUrl / "test/org/case/testcase_2.10.0_0.12.2/1.0.1") should be(true)
+      exists(sardine, webdavUrl / "test/org/case/testcase_2.9.2_0.12/1.0.1") should be(true)
+      exists(sardine, webdavUrl / "test/org/case/testcase_2.10.0_0.12/1.0.1") should be(true)
 
       val sardine2 = SardineFactory.begin(username, password)
       sardine2.delete(webdavUrl / "test/")
@@ -144,6 +153,9 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues
   }
 }
 
+/**
+ * Load WebDav config from file
+ */
 trait WebDavConfig {
 
   private val dummyConfig = ConfigFactory.load("test-dummy")

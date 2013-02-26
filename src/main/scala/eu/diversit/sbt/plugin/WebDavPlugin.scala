@@ -33,7 +33,8 @@ object WebDavPlugin extends Plugin {
      */
     def createPaths(organization: String, artifactName: String, version: String, crossScalaVersions: Seq[String], sbtVersion: String) = {
       crossScalaVersions map { scalaVersion =>
-        organization.asPath / (("%s_%s_%s") format (artifactName, scalaVersion, sbtVersion)) / version
+        def topLevel(v: String, level: Int) = v split '.' take level mkString "."
+        organization.asPath / (("%s_%s_%s") format (artifactName, scalaVersion, topLevel(sbtVersion,2))) / version
       }
     }
     /**
