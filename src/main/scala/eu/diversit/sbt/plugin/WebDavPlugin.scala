@@ -34,7 +34,9 @@ object WebDavPlugin extends Plugin {
     def createPaths(organization: String, artifactName: String, version: String, crossScalaVersions: Seq[String], sbtVersion: String) = {
       crossScalaVersions map { scalaVersion =>
         def topLevel(v: String, level: Int) = v split '.' take level mkString "."
-        organization.asPath / (("%s_%s_%s") format (artifactName, scalaVersion, topLevel(sbtVersion,2))) / version
+        // The publish location for Scala 2.10.x is only '2.10', for Scala 2.9.x it is '2.9.x' !
+        val sv = if(scalaVersion startsWith "2.10") topLevel(scalaVersion, 2) else scalaVersion
+        organization.asPath / (("%s_%s_%s") format (artifactName, sv, topLevel(sbtVersion,2))) / version
       }
     }
     /**

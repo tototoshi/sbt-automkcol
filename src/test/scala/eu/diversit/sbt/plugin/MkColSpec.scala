@@ -38,11 +38,12 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
 
       val paths = createPaths("com.organization", "name", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2")
       paths should contain ("/com/organization/name_2.9.2_0.12/1.0.1")
-      paths should contain ("/com/organization/name_2.10.0_0.12/1.0.1")
+      paths should contain ("/com/organization/name_2.10_0.12/1.0.1") // for scala 2.10.* publish path is different!!
     }
 
     scenario("pathCollections should return all collections for path") {
-      pathCollections("/com/organization/name_2.10.0_0.12/1.0.1") should equal(List("com", "com/organization", "com/organization/name_2.10.0_0.12", "com/organization/name_2.10.0_0.12/1.0.1"))
+      pathCollections("/com/organization/name_2.10_0.12/1.0.1") should equal(List("com", "com/organization", "com/organization/name_2.10_0.12", "com/organization/name_2.10_0.12/1.0.1"))
+      pathCollections("/com/organization/name_2.10_0.12/1.0.1") should equal(List("com", "com/organization", "com/organization/name_2.10_0.12", "com/organization/name_2.10_0.12/1.0.1"))
     }
 
     scenario("Update paths with 'publishTo' location") {
@@ -135,7 +136,7 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
       import com.googlecode.sardine._
       val sardine = SardineFactory.begin()
       exists(sardine, webdavUrl / "test/org/case/testcase_2.9.2_0.12/1.0.1") should be(true)
-      exists(sardine, webdavUrl / "test/org/case/testcase_2.10.0_0.12/1.0.1") should be(true)
+      exists(sardine, webdavUrl / "test/org/case/testcase_2.10_0.12/1.0.1") should be(true)
 
       val sardine2 = SardineFactory.begin(username, password)
       sardine2.delete(webdavUrl / "test/")
