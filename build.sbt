@@ -8,7 +8,7 @@ organization := "eu.diversit.sbt.plugin"
 
 name := "webdav4sbt"
 
-version := "0.1"
+version := "1.0"
 
 scalaVersion := "2.9.2"
 
