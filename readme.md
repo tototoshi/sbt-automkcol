@@ -2,10 +2,10 @@
 
 ## Goal
 
-By default, the _publish_ task will not create the required collections which will cause the _publish_ task to fail when the required collections do not exist.
+When publishing artifact to a WebDav location, by default, the _publish_ task will not create the required collections which will cause the _publish_ task to fail when the required collections do not exist.
 You could create the directories manually by mounting the WebDav location locally or by using 'curl', but this is tedious. Especially in a CI environment, you want everything to run automatically.
 
-So, the goal of this project is "to create a plugin for SBT which creates the required collections (folders) on a WebDav location, for example CloudBees, so that SBT can publish the artifact to the WebDav location."
+So, the goal of this project was "to create a plugin for SBT which creates the required collections (folders) on a WebDav location, for example CloudBees, so that SBT can publish the artifact to the WebDav location."
 
 ## Tasks
 
