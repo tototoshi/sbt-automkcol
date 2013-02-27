@@ -90,7 +90,7 @@ This is an example of a _publishTo_ configuration for CloudBees as is used by th
     pomIncludeRepository := { x => false }
 
     pomExtra := (
-      <url>https://bitbucket.org/diversit/webdav4sbt.git</url>
+      <url>https://bitbucket.org/diversit/webdav4sbt</url>
       <licenses>
         <license>
           <name>Eclipse Public License v1.0</name>

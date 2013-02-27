@@ -25,7 +25,7 @@ pomExtra := (
   </licenses>
   <scm>
     <url>https://bitbucket.org/diversit/webdav4sbt</url>
-    <connection>scm:hg:https://bitbucket.org/diversit/webdav4sbt</connection>
+    <connection>scm:git:https://bitbucket.org/diversit/webdav4sbt.git</connection>
   </scm>
   <developers>
     <developer>
