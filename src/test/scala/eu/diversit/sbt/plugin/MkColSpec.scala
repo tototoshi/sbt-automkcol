@@ -160,7 +160,7 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
 trait WebDavConfig {
 
   private val dummyConfig = ConfigFactory.load("test-dummy")
-  private val config = ConfigFactory.parseFile(new java.io.File("/private/diversit/test.conf")).withFallback(dummyConfig).getConfig("webdav")
+  private val config = ConfigFactory.parseFile(new java.io.File("/private/diversit/webdav4sbt/test.conf")).withFallback(dummyConfig).getConfig("webdav")
   val username = config.getString("username")
   val password = config.getString("password")
   val webdavUrl = config.getString("url")
