@@ -6,6 +6,7 @@ import eu.diversit.sbt.plugin.WebDavPlugin.MkCol
 import sbt.{DirectCredentials, Credentials, JavaNet1Repository, MavenRepository}
 import sbt.std.Streams
 import com.typesafe.config.ConfigFactory
+import java.net.URL
 
 /**
  * A sbt.Logger implementation for testing.
@@ -89,10 +90,17 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
       }
     }
 
+    def getFileResource(resourceName: String) = {
+      import java.io.File
+      val resource: URL = getClass.getResource(resourceName)
+      println("Found resource: "+resource)
+      new File(resource.toURI)
+    }
+
     scenario("getCredentialsForHost should return credentials for host") {
       import java.io.File
       val credentials = Seq(Credentials("realm", "host.name", "user", "pwd"),
-        Credentials(new File(".")),
+        Credentials(getFileResource("/test-credentials.properties")),
         Credentials("realm2", "host2.name", "user", "pwd"))
 
       val resolver = Some(MavenRepository("releases", "http://host2.name/"))
@@ -101,6 +109,22 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
       foundCredentials should not be(None)
       foundCredentials map {
         case c:DirectCredentials => c.host should be("host2.name")
+        case _ => fail("Wrong credentials found")
+      }
+    }
+
+    scenario("getCredentialsForHost should also use File based credentials") {
+      import java.io.File
+      val credentials = Seq(Credentials("realm", "host.name", "user", "pwd"),
+        Credentials(getFileResource("/test-credentials.properties")), // this file contains the credentials for this testcase
+        Credentials("realm2", "host2.name", "user", "pwd"))
+
+      val resolver = Some(MavenRepository("releases", "http://some-repo.for.test/"))
+
+      val foundCredentials = getCredentialsForHost(resolver, credentials)
+      foundCredentials should not be(None)
+      foundCredentials map {
+        case c:DirectCredentials => c.host should be("some-repo.for.test")
         case _ => fail("Wrong credentials found")
       }
     }

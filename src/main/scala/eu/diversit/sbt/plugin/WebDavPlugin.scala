@@ -104,7 +104,7 @@ object WebDavPlugin extends Plugin {
     def getCredentialsForHost(publishTo: Option[Resolver], creds: Seq[Credentials]) = {
       mavenRoot(publishTo) flatMap { root =>
         val hostRegex(host) = root
-        creds find {
+        Credentials.allDirect(creds) find {
           case c: DirectCredentials => c.host == host
           case _ => false
         }
