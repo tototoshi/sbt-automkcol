@@ -1,6 +1,6 @@
 # WebDav Plugin 4 SBT
 
-[logo]: http://www.cloudbees.com/sites/default/files/Button-Built-on-CB-1.png
+![Dev At CloudBees][1]
 
 ## Goal
 
@@ -116,9 +116,14 @@ This is an example of a _publishTo_ configuration for CloudBees as is used by th
 
 ## WebDav
 
-This project uses the library [Sardine](https://code.google.com/p/sardine/) as a Java [WebDav](http://www.webdav.org/specs/rfc2518.html) client.
+This project uses the library [Sardine][3]) as a Java [WebDav][4] client.
 
 ### MKCOL
 
 Command to create collections (a.k.a directories) on a WebDav host.
-The '[MKCOL](http://www.webdav.org/specs/rfc2518.html#METHOD_MKCOL)' command is currently the only WebDav command which is implemented by this plugin.
+The '[MKCOL][2]' command is currently the only WebDav command which is implemented by this plugin.
+
+[1]: http://www.cloudbees.com/sites/default/files/Button-Built-on-CB-1.png
+[2]: http://www.webdav.org/specs/rfc2518.html#METHOD_MKCOL
+[3]: https://code.google.com/p/sardine/
+[4]: http://www.webdav.org/specs/rfc2518.html
