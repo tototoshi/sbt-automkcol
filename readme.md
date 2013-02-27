@@ -1,5 +1,7 @@
 # WebDav Plugin 4 SBT
 
+[logo]: http://www.cloudbees.com/sites/default/files/Button-Built-on-CB-1.png
+
 ## Goal
 
 When publishing artifact to a WebDav location, by default, the _publish_ task will not create the required collections which will cause the _publish_ task to fail when the required collections do not exist.
