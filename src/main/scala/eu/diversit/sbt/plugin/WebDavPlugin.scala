@@ -101,11 +101,14 @@ object WebDavPlugin extends Plugin {
       }
 
     val hostRegex = """^http[s]?://([a-zA-Z0-9\.\-]*)/.*$""".r
-    def getCredentialsForHost(publishTo: Option[Resolver], creds: Seq[Credentials]) = {
+    def getCredentialsForHost(publishTo: Option[Resolver], creds: Seq[Credentials], streams: TaskStreams[_]) = {
       mavenRoot(publishTo) flatMap { root =>
         val hostRegex(host) = root
         Credentials.allDirect(creds) find {
-          case c: DirectCredentials => c.host == host
+          case c: DirectCredentials => {
+            streams.log.info("WebDav: Found credentials for host: "+c.host)
+            c.host == host
+          }
           case _ => false
         }
       }
@@ -129,7 +132,7 @@ object WebDavPlugin extends Plugin {
         }
       }
 
-      val cc = getCredentialsForHost(publishTo, credentialsSet)
+      val cc = getCredentialsForHost(publishTo, credentialsSet, streams)
       cc match {
         case Some(creds: DirectCredentials) => makeCollections(creds)
         case _ => {

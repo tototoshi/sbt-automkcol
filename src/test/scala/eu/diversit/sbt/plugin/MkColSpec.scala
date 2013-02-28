@@ -104,8 +104,9 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
         Credentials("realm2", "host2.name", "user", "pwd"))
 
       val resolver = Some(MavenRepository("releases", "http://host2.name/"))
+      val streams = Streams[String]((_) => new File("target"), (_) => "Test", (_,_) => testLogger)("Test")
 
-      val foundCredentials = getCredentialsForHost(resolver, credentials)
+      val foundCredentials = getCredentialsForHost(resolver, credentials, streams)
       foundCredentials should not be(None)
       foundCredentials map {
         case c:DirectCredentials => c.host should be("host2.name")
@@ -120,8 +121,9 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
         Credentials("realm2", "host2.name", "user", "pwd"))
 
       val resolver = Some(MavenRepository("releases", "http://some-repo.for.test/"))
+      val streams = Streams[String]((_) => new File("target"), (_) => "Test", (_,_) => testLogger)("Test")
 
-      val foundCredentials = getCredentialsForHost(resolver, credentials)
+      val foundCredentials = getCredentialsForHost(resolver, credentials, streams)
       foundCredentials should not be(None)
       foundCredentials map {
         case c:DirectCredentials => c.host should be("some-repo.for.test")
