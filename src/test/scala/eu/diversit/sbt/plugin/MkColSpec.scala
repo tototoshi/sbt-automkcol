@@ -164,7 +164,7 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
       import java.io.File
       val streams = Streams[String]((_) => new File("target"), (_) => "Test", (_,_) => testLogger)("Test")
       val credentials = Seq(Credentials("realm", host, username, password))
-      mkcolAction("test.org.case", "testcase", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2", Some(MavenRepository("releases", webdavUrl)), credentials, streams, true)
+      mkcolAction("test.org.case", "testcase", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2", true, Some(MavenRepository("releases", webdavUrl)), credentials, streams)
 
       import com.googlecode.sardine._
       val sardine = SardineFactory.begin()
@@ -179,7 +179,7 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
       import java.io.File
       val streams = Streams[String]((_) => new File("target"), (_) => "Test", (_,_) => testLogger)("Test")
       val credentials = Seq(Credentials("realm", host, username, password))
-      mkcolAction("test.org.case", "testcase", "1.0.1", Seq("2.9.2"), "0.12.2", Some(MavenRepository("releases", webdavUrl)), credentials, streams, false)
+      mkcolAction("test.org.case", "testcase", "1.0.1", Seq("2.9.2"), "0.12.2", false, Some(MavenRepository("releases", webdavUrl)), credentials, streams)
 
       import com.googlecode.sardine._
       val sardine = SardineFactory.begin()
@@ -195,7 +195,7 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
       val credentials = Seq(Credentials("realm", "dummy.url", "user", "pwd"))
 
       intercept[MkColException] {
-        mkcolAction("test.org.case", "testcase", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2", Some(MavenRepository("releases", webdavUrl)), credentials, streams, true)
+        mkcolAction("test.org.case", "testcase", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2", true, Some(MavenRepository("releases", webdavUrl)), credentials, streams)
       }
     }
   }

@@ -122,7 +122,7 @@ object WebDavPlugin extends Plugin {
      * Creates a collection for all artifacts that are going to be published
      * if the collection does not exist yet.
      */
-    def mkcolAction(organization: String, artifactName: String, version: String, crossScalaVersions: Seq[String], sbtVersion: String, publishTo: Option[Resolver], credentialsSet: Seq[Credentials], streams: TaskStreams[_], crossPaths: Boolean) = {
+    def mkcolAction(organization: String, artifactName: String, version: String, crossScalaVersions: Seq[String], sbtVersion: String, crossPaths: Boolean, publishTo: Option[Resolver], credentialsSet: Seq[Credentials], streams: TaskStreams[_]) = {
       streams.log.info("WebDav: Check whether (new) collection need to be created.")
       val artifactPaths = createPaths(organization, artifactName, version, crossScalaVersions, sbtVersion, crossPaths)
       val artifactPathParts = artifactPaths map pathCollections
@@ -154,7 +154,7 @@ object WebDavPlugin extends Plugin {
   object WebDav extends MkCol with WebDavKeys {
     import sbt.Keys._
     val globalSettings = Seq(
-      mkcol <<= (organization, name, version, crossScalaVersions, sbtVersion, publishTo, credentials, streams, crossPaths) map mkcolAction,
+      mkcol <<= (organization, name, version, crossScalaVersions, sbtVersion, crossPaths, publishTo, credentials, streams) map mkcolAction,
       publish <<= publish.dependsOn(mkcol)
     )
 
