@@ -35,11 +35,18 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
   import StringPath._
 
   feature("WebDav Make Collection") {
-    scenario("Create artifact paths for all crossScalaVersions") {
+    scenario("Create artifact paths for all crossScalaVersions (crossPaths == true)") {
 
       val paths = createPaths("com.organization", "name", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2", true)
       paths should contain ("/com/organization/name_2.9.2_0.12/1.0.1")
       paths should contain ("/com/organization/name_2.10_0.12/1.0.1") // for scala 2.10.* publish path is different!!
+    }
+
+    scenario("Create artifact path when crossPaths == false") {
+
+      val paths = createPaths("com.organization", "name", "1.0.1", Seq("2.9.2"), "0.12.2", false)
+      paths should have size (1)
+      paths should contain ("/com/organization/name/1.0.1")
     }
 
     scenario("pathCollections should return all collections for path") {
@@ -163,6 +170,20 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
       val sardine = SardineFactory.begin()
       exists(sardine, webdavUrl / "test/org/case/testcase_2.9.2_0.12/1.0.1") should be(true)
       exists(sardine, webdavUrl / "test/org/case/testcase_2.10_0.12/1.0.1") should be(true)
+
+      val sardine2 = SardineFactory.begin(username, password)
+      sardine2.delete(webdavUrl / "test/")
+    }
+
+    scenario("mkcolAction should create folder for java artifact (crossPaths == false)") {
+      import java.io.File
+      val streams = Streams[String]((_) => new File("target"), (_) => "Test", (_,_) => testLogger)("Test")
+      val credentials = Seq(Credentials("realm", host, username, password))
+      mkcolAction("test.org.case", "testcase", "1.0.1", Seq("2.9.2"), "0.12.2", Some(MavenRepository("releases", webdavUrl)), credentials, streams, false)
+
+      import com.googlecode.sardine._
+      val sardine = SardineFactory.begin()
+      exists(sardine, webdavUrl / "test/org/case/testcase/1.0.1") should be(true)
 
       val sardine2 = SardineFactory.begin(username, password)
       sardine2.delete(webdavUrl / "test/")
