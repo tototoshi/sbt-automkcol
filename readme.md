@@ -132,6 +132,11 @@ This project uses the library [Sardine][3]) as a Java [WebDav][4] client.
 Command to create collections (a.k.a directories) on a WebDav host.
 The '[MKCOL][2]' command is currently the only WebDav command which is implemented by this plugin.
 
+## Versions
+
+*   1.1 (current) Added support for (Java) artifacts without Scala version.
+*   1.0 First plugin release
+
 ## Contributors
 
 Thanks for their contribution:
