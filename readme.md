@@ -24,7 +24,7 @@ To use the plugin, add these lines to your _project/plugins.sbt_ or to the globa
 
     resolvers += "DiversIT repo" at "http://repository-diversit.forge.cloudbees.com/release"
 
-    addSbtPlugin("eu.diversit.sbt.plugin" % "webdav4sbt" % "1.0")
+    addSbtPlugin("eu.diversit.sbt.plugin" % "webdav4sbt" % "1.1")
 
 In your project's _build.sbt_
 Add to the top of your project's _build.sbt_:
@@ -38,6 +38,15 @@ or
     seq(WebDav.scopedSettings : _*)
 
 >_The plugin was build for both Scala 2.9.2 and 2.10.0 using SBT 0.12.2_
+
+### Publishing Java artifacts with SBT
+
+Version 1.1 added support for publishing plain Java artifacts. In contrast to Scala artifacts, Java artifacts do not need the Scala version in the artifact name.
+To disable adding the Scala version in the artifact name, add this to your _build.sbt_:
+
+    crossPath := false
+
+Thanks to [jplikesbikes][5] for this contribution.
 
 ### Global or Scoped settings?
 
@@ -123,7 +132,14 @@ This project uses the library [Sardine][3]) as a Java [WebDav][4] client.
 Command to create collections (a.k.a directories) on a WebDav host.
 The '[MKCOL][2]' command is currently the only WebDav command which is implemented by this plugin.
 
+## Contributors
+
+Thanks for their contribution:
+
+*   [jplikesbikes][5] for crossPath support.
+
 [1]: http://www.cloudbees.com/sites/default/files/Button-Built-on-CB-1.png
 [2]: http://www.webdav.org/specs/rfc2518.html#METHOD_MKCOL
 [3]: https://code.google.com/p/sardine/
 [4]: http://www.webdav.org/specs/rfc2518.html
+[5]: https://bitbucket.org/jplikesbikes
