@@ -1,6 +1,6 @@
 import eu.diversit.sbt.plugin.WebDavPlugin._
 
-name := "helloworld"
+name := "ivy-project"
 
 scalaVersion := "2.10.1"
 
@@ -12,10 +12,14 @@ libraryDependencies ++= Seq(
   "org.gnu.inet" % "libidn" % "1.15"
 )
 
-publishMavenStyle := false
+//crossScalaVersions := Seq("2.9.2", "2.10.0")
 
-credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
+//crossPaths := false
+
+//publishMavenStyle := false
+
+//credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 
 seq(WebDav.globalSettings : _*)
 
-publishTo := Some("Server TEST Repo" at "https://ivy.sflanker.ru/sbt/")
+//publishTo := Some("Server TEST Repo" at "https://ivy.sflanker.ru/sbt/")
