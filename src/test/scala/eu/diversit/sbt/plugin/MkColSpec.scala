@@ -33,18 +33,35 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
   username should not startWith("fill")
 
   import StringPath._
+  val IVY_STYLE = false
+  val NO_CROSS_PATHS = false
+  val WITH_CROSS_PATHS = true
 
   feature("WebDav Make Collection") {
+    scenario("Create artifact paths for ivy project should not include sbt-version") {
+      // With cross paths
+      val paths = createPaths("com.organization", "name", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2", WITH_CROSS_PATHS, IVY_STYLE)
+      paths should contain ("/com/organization/name_2.9.2/1.0.1")
+      paths should contain ("/com/organization/name_2.10/1.0.1")
+    }
+
+    scenario("Create artifact paths for ivy project should not contain any version number when crossPaths == true") {
+      // Without cross paths
+      val paths2 = createPaths("com.organization", "name", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2", NO_CROSS_PATHS, IVY_STYLE)
+      paths2 should contain ("/com/organization/name/1.0.1")
+      paths2 should contain ("/com/organization/name/1.0.1")
+    }
+
     scenario("Create artifact paths for all crossScalaVersions (crossPaths == true)") {
 
-      val paths = createPaths("com.organization", "name", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2", true)
+      val paths = createPaths("com.organization", "name", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2", WITH_CROSS_PATHS)
       paths should contain ("/com/organization/name_2.9.2_0.12/1.0.1")
       paths should contain ("/com/organization/name_2.10_0.12/1.0.1") // for scala 2.10.* publish path is different!!
     }
 
     scenario("Create artifact path when crossPaths == false") {
 
-      val paths = createPaths("com.organization", "name", "1.0.1", Seq("2.9.2"), "0.12.2", false)
+      val paths = createPaths("com.organization", "name", "1.0.1", Seq("2.9.2"), "0.12.2", NO_CROSS_PATHS)
       paths should have size (1)
       paths should contain ("/com/organization/name/1.0.1")
     }
@@ -164,7 +181,7 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
       import java.io.File
       val streams = Streams[String]((_) => new File("target"), (_) => "Test", (_,_) => testLogger)("Test")
       val credentials = Seq(Credentials("realm", host, username, password))
-      mkcolAction("test.org.case", "testcase", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2", true, Some(MavenRepository("releases", webdavUrl)), credentials, streams)
+      mkcolAction("test.org.case", "testcase", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2", WITH_CROSS_PATHS, Some(MavenRepository("releases", webdavUrl)), credentials, streams)
 
       import com.googlecode.sardine._
       val sardine = SardineFactory.begin()
@@ -179,11 +196,26 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
       import java.io.File
       val streams = Streams[String]((_) => new File("target"), (_) => "Test", (_,_) => testLogger)("Test")
       val credentials = Seq(Credentials("realm", host, username, password))
-      mkcolAction("test.org.case", "testcase", "1.0.1", Seq("2.9.2"), "0.12.2", false, Some(MavenRepository("releases", webdavUrl)), credentials, streams)
+      mkcolAction("test.org.case", "testcase", "1.0.1", Seq("2.9.2"), "0.12.2", NO_CROSS_PATHS, Some(MavenRepository("releases", webdavUrl)), credentials, streams)
 
       import com.googlecode.sardine._
       val sardine = SardineFactory.begin()
       exists(sardine, webdavUrl / "test/org/case/testcase/1.0.1") should be(true)
+
+      val sardine2 = SardineFactory.begin(username, password)
+      sardine2.delete(webdavUrl / "test/")
+    }
+
+    scenario("mkcolAction should create correct folder structure for Ivy project (publishMavenStyle = false)") {
+      import java.io.File
+      val streams = Streams[String]((_) => new File("target"), (_) => "Test", (_,_) => testLogger)("Test")
+      val credentials = Seq(Credentials("realm", host, username, password))
+      mkcolAction("test.org.case", "testcase", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2", WITH_CROSS_PATHS, Some(MavenRepository("releases", webdavUrl)), credentials, streams, IVY_STYLE)
+
+      import com.googlecode.sardine._
+      val sardine = SardineFactory.begin()
+      exists(sardine, webdavUrl / "test/org/case/testcase_2.9.2/1.0.1") should be(true)
+      exists(sardine, webdavUrl / "test/org/case/testcase_2.10/1.0.1") should be(true)
 
       val sardine2 = SardineFactory.begin(username, password)
       sardine2.delete(webdavUrl / "test/")
@@ -195,7 +227,7 @@ class MkColSpec extends FeatureSpec with ShouldMatchers with OptionValues with T
       val credentials = Seq(Credentials("realm", "dummy.url", "user", "pwd"))
 
       intercept[MkColException] {
-        mkcolAction("test.org.case", "testcase", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2", true, Some(MavenRepository("releases", webdavUrl)), credentials, streams)
+        mkcolAction("test.org.case", "testcase", "1.0.1", Seq("2.9.2", "2.10.0"), "0.12.2", WITH_CROSS_PATHS, Some(MavenRepository("releases", webdavUrl)), credentials, streams)
       }
     }
   }
