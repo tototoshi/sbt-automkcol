@@ -24,7 +24,7 @@ To use the plugin, add these lines to your _project/plugins.sbt_ or to the globa
 
     resolvers += "DiversIT repo" at "http://repository-diversit.forge.cloudbees.com/release"
 
-    addSbtPlugin("eu.diversit.sbt.plugin" % "webdav4sbt" % "1.1")
+    addSbtPlugin("eu.diversit.sbt.plugin" % "webdav4sbt" % "1.2")
 
 In your project's _build.sbt_
 Add to the top of your project's _build.sbt_:
@@ -47,6 +47,14 @@ To disable adding the Scala version in the artifact name, add this to your _buil
     crossPath := false
 
 Thanks to [jplikesbikes][5] for this contribution.
+
+### Ivy
+
+Since version 1.2, the WebDav plugin supports publishing Ivy artifacts.
+To publish an Ivy artifact, in your _build.sbt_ set:
+
+    publishMavenStyle := false
+
 
 ### Global or Scoped settings?
 
@@ -134,7 +142,8 @@ The '[MKCOL][2]' command is currently the only WebDav command which is implement
 
 ## Versions
 
-*   1.1 (current) Added support for (Java) artifacts without Scala version.
+*   1.2 (current) Added support for Ivy artifacts.
+*   1.1 Added support for (Java) artifacts without Scala version.
 *   1.0 First plugin release
 
 ## Contributors
@@ -142,6 +151,7 @@ The '[MKCOL][2]' command is currently the only WebDav command which is implement
 Thanks for their contribution:
 
 *   [jplikesbikes][5] for crossPath support.
+*   Flanker_9 for raising the Ivy issue.
 
 [1]: http://www.cloudbees.com/sites/default/files/Button-Built-on-CB-1.png
 [2]: http://www.webdav.org/specs/rfc2518.html#METHOD_MKCOL
