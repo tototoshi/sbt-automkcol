@@ -30,22 +30,31 @@ object WebDavPlugin extends Plugin {
 
     /**
      * Create artifact pathParts
+     * -when is sbtPlugin then sbt version must be added to path
+     * -when not crossPaths then not add any version number to path
+     * -otherwise add scala version to path
+     *
+     * -when Scala 2.10.x then only add 2.10 to path
+     * -otherwise add whole version to path (e.g. 2.9.2)
      */
-    def createPaths(organization: String, artifactName: String, version: String, crossScalaVersions: Seq[String], sbtVersion: String, crossPaths: Boolean, mavenStyle: Boolean = true) = {
+    def createPaths(organization: String, artifactName: String, version: String, crossScalaVersions: Seq[String],
+                    sbtVersion: String, crossPaths: Boolean, mavenStyle: Boolean, isSbtPlugin: Boolean) = {
       if(crossPaths){
         crossScalaVersions map { scalaVersion =>
           def topLevel(v: String, level: Int) = v split '.' take level mkString "."
           // The publish location for Scala 2.10.x is only '2.10', for Scala 2.9.x it is '2.9.x' !
-          val sv = if(scalaVersion startsWith "2.10") topLevel(scalaVersion, 2) else scalaVersion
+          val scalaVer = if(scalaVersion startsWith "2.10") topLevel(scalaVersion, 2) else scalaVersion
 
-          if (mavenStyle) {
-            organization.asPath / (("%s_%s_%s") format (artifactName, sv, topLevel(sbtVersion,2))) / version
+          if (isSbtPlugin) {
+            // e.g. /com/organization/artifact_2.9.2_0.12/0.1
+            organization.asPath / (("%s_%s_%s") format (artifactName, scalaVer, topLevel(sbtVersion,2))) / version
           } else {
-            // Ivy style
-            organization.asPath / (("%s_%s") format (artifactName, sv)) / version
+            // e.g. /com/organization/artifact_2.9.2/0.1
+            organization.asPath / (("%s_%s") format (artifactName, scalaVer)) / version
           }
         }
       }else{
+        // e.g. /com/organization/artifact/0.1
         Seq( organization.asPath / artifactName / version )
       }
     }
@@ -128,9 +137,11 @@ object WebDavPlugin extends Plugin {
      * Creates a collection for all artifacts that are going to be published
      * if the collection does not exist yet.
      */
-    def mkcolAction(organization: String, artifactName: String, version: String, crossScalaVersions: Seq[String], sbtVersion: String, crossPaths: Boolean, publishTo: Option[Resolver], credentialsSet: Seq[Credentials], streams: TaskStreams[_], mavenStyle: Boolean = true) = {
+    def mkcolAction(organization: String, artifactName: String, version: String, crossScalaVersions: Seq[String], sbtVersion: String,
+                    crossPaths: Boolean, publishTo: Option[Resolver], credentialsSet: Seq[Credentials], streams: TaskStreams[_],
+                    mavenStyle: Boolean, sbtPlugin: Boolean) = {
       streams.log.info("WebDav: Check whether (new) collection need to be created.")
-      val artifactPaths = createPaths(organization, artifactName, version, crossScalaVersions, sbtVersion, crossPaths, mavenStyle)
+      val artifactPaths = createPaths(organization, artifactName, version, crossScalaVersions, sbtVersion, crossPaths, mavenStyle, sbtPlugin)
       val artifactPathParts = artifactPaths map pathCollections
 
       def makeCollections(credentials: DirectCredentials) = {
@@ -160,7 +171,7 @@ object WebDavPlugin extends Plugin {
   object WebDav extends MkCol with WebDavKeys {
     import sbt.Keys._
     val globalSettings = Seq(
-      mkcol <<= (organization, name, version, crossScalaVersions, sbtVersion, crossPaths, publishTo, credentials, streams, publishMavenStyle) map mkcolAction,
+      mkcol <<= (organization, name, version, crossScalaVersions, sbtVersion, crossPaths, publishTo, credentials, streams, publishMavenStyle, sbtPlugin) map mkcolAction,
       publish <<= publish.dependsOn(mkcol)
     )
 
