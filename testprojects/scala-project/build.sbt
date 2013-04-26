@@ -1,6 +1,10 @@
+import eu.diversit.sbt.plugin.WebDavPlugin._
+
+seq(WebDav.globalSettings : _*)
+
 name := "scala-project"
 
-organization := "test project"
+organization := "test_project"
 
 scalaVersion := "2.10.0"
 
