@@ -24,7 +24,7 @@ To use the plugin, add these lines to your _project/plugins.sbt_ or to the globa
 
     resolvers += "DiversIT repo" at "http://repository-diversit.forge.cloudbees.com/release"
 
-    addSbtPlugin("eu.diversit.sbt.plugin" % "webdav4sbt" % "1.2")
+    addSbtPlugin("eu.diversit.sbt.plugin" % "webdav4sbt" % "1.3")
 
 In your project's _build.sbt_
 Add to the top of your project's _build.sbt_:
@@ -142,7 +142,8 @@ The '[MKCOL][2]' command is currently the only WebDav command which is implement
 
 ## Versions
 
-*   1.2 (current) Added support for Ivy artifacts.
+*   1.3 (current) Fixed issue that sbtVersion should only be added for sbtPlugin projects
+*   1.2 Added support for Ivy artifacts.
 *   1.1 Added support for (Java) artifacts without Scala version.
 *   1.0 First plugin release
 
