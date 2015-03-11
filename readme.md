@@ -1,6 +1,6 @@
-# WebDav Plugin 4 SBT
+# Auto MKCOL Plugin 4 SBT
 
-![Dev At CloudBees][1]
+This project is a fork of [webdav4sbt](https://bitbucket.org/diversit/webdav4sbt).
 
 ## Goal
 
@@ -22,14 +22,13 @@ It will only create the collections which do not exist yet.
 
 To use the plugin, add these lines to your _project/plugins.sbt_ or to the global _.sbt/plugins/build.sbt_:
 
-    resolvers += "DiversIT repo" at "http://repository-diversit.forge.cloudbees.com/release"
-
-    addSbtPlugin("eu.diversit.sbt.plugin" % "webdav4sbt" % "1.3")
+    addSbtPlugin("com.github.tototoshi" % "sbt-automkcol" % "1.4.0")
 
 In your project's _build.sbt_
 Add to the top of your project's _build.sbt_:
 
-    import eu.diversit.sbt.plugin.WebDavPlugin._
+    import com.github.tototoshi.automkcol.Plugin._
+
 and anywhere within the same file add:
 
     seq(WebDav.globalSettings : _*)

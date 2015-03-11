@@ -1,4 +1,4 @@
-package eu.diversit.sbt.plugin
+package com.github.tototoshi.sbt.automkcol
 
 import sbt._
 import com.googlecode.sardine.{SardineFactory, Sardine}

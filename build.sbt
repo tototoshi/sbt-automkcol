@@ -1,10 +1,14 @@
+import SonatypeKeys._
+
+sonatypeSettings
+
 sbtPlugin := true
 
-organization := "eu.diversit.sbt.plugin"
+organization := "com.github.tototoshi"
 
-name := "webdav4sbt"
+name := "sbt-automkcol"
 
-version := "1.3"
+version := "1.4.0"
 
 libraryDependencies ++= Seq(
     "com.googlecode.sardine" % "sardine" % "146",
@@ -12,4 +16,41 @@ libraryDependencies ++= Seq(
     "com.typesafe"  % "config" % "1.0.0" % "test"
 )
 
-crossScalaVersions := Seq("2.9.2", "2.10.0")
+publishMavenStyle := true
+
+publishTo <<= version { (v: String) => _publishTo(v) }
+
+publishArtifact in Test := false
+
+def _publishTo(v: String) = {
+  val nexus = "https://oss.sonatype.org/"
+  if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "content/repositories/snapshots")
+  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
+}
+
+pomExtra := (
+  <url>https://github.com/tototoshi/sbt-automkcol</url>
+  <licenses>
+    <license>
+      <name>Eclipse Public License v1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>git@github.com:tototoshi/sbt-automkcol</url>
+    <connection>scm:git:git@github.com:tototoshi/sbt-automkcol.git</connection>
+  </scm>
+  <developers>
+    <developer>
+      <id>diversit</id>
+      <name>Joost den Boer</name>
+      <url>http://www.diversit.eu</url>
+    </developer>
+    <developer>
+      <id>tototoshi</id>
+      <name>Toshiyuki Takahashi</name>
+      <url>https://github.com/tototoshi</url>
+    </developer>
+  </developers>
+)
