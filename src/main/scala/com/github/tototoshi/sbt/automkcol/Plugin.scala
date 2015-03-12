@@ -33,15 +33,15 @@ object Plugin extends sbt.Plugin {
 
           if (isSbtPlugin) {
             // e.g. /com/organization/artifact_2.9.2_0.12/0.1
-            organization.asPath / (("%s_%s_%s") format (artifactName, scalaVer, topLevel(sbtVersion,2))) / version
+            organization.asPath / (("%s_%s_%s") format (artifactName.toLowerCase, scalaVer, topLevel(sbtVersion,2))) / version
           } else {
             // e.g. /com/organization/artifact_2.9.2/0.1
-            organization.asPath / (("%s_%s") format (artifactName, scalaVer)) / version
+            organization.asPath / (("%s_%s") format (artifactName.toLowerCase, scalaVer)) / version
           }
         }
       }else{
         // e.g. /com/organization/artifact/0.1
-        Seq( organization.asPath / artifactName / version )
+        Seq( organization.asPath / artifactName.toLowerCase / version )
       }
     }
     /**
