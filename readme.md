@@ -31,10 +31,10 @@ Add to the top of your project's _build.sbt_:
 
 and anywhere within the same file add:
 
-    seq(AutoMkcol.globalSettings : _*)
+    AutoMkcol.globalSettings
 or
 
-    seq(AutoMkcol.scopedSettings : _*)
+    AutoMkcol.scopedSettings
 
 >_The plugin was build for both Scala 2.9.2 and 2.10.0 using SBT 0.12.2_
 
@@ -89,16 +89,16 @@ To publish to a WebDav location, like CloudBees, you need to add a _publishTo_ c
 One way of doing that is to create a seperate _publish.sbt_ file in your project. The advantage is that you seperate the configuration for building your project
 with the publish configuration in seperate files.
 
-This is an example of a _publishTo_ configuration for CloudBees as is used by this project. It also shows how to create a Maven Pom for your project.
+This is an example of a _publishTo_ configuration. It also shows how to create a Maven Pom for your project.
 
-    credentials += (Some(new File("/private/diversit/.credentials/.credentials")) map(f => Credentials(f))).get
+    credentials += (Some(new File("/private/tototoshi/.credentials/.credentials")) map(f => Credentials(f))).get
 
     publishTo <<= version { v: String =>
-      val cloudbees = "https://repository-diversit.forge.cloudbees.com/"
+      val mymvnrepo = "https://mymvnrepo/"
       if (v.trim.endsWith("SNAPSHOT"))
-        Some("snapshots" at cloudbees + "snapshot")
+        Some("snapshots" at mymvnrepo + "snapshot")
       else
-        Some("releases" at cloudbees + "release")
+        Some("releases" at mymvnrepo + "release")
     }
 
     publishMavenStyle := true
@@ -108,7 +108,7 @@ This is an example of a _publishTo_ configuration for CloudBees as is used by th
     pomIncludeRepository := { x => false }
 
     pomExtra := (
-      <url>https://bitbucket.org/diversit/webdav4sbt</url>
+      <url>https://github.com/tototoshi/sbt-automkcol</url>
       <licenses>
         <license>
           <name>Eclipse Public License v1.0</name>
@@ -117,14 +117,19 @@ This is an example of a _publishTo_ configuration for CloudBees as is used by th
         </license>
       </licenses>
       <scm>
-        <url>https://bitbucket.org/diversit/webdav4sbt</url>
-        <connection>scm:git:https://bitbucket.org/diversit/webdav4sbt.git</connection>
+        <url>https://github.com/tototoshi/sbt-automkcol</url>
+        <connection>scm:git:https://github.com/tototoshi/sbt-automkcol.git</connection>
       </scm>
       <developers>
         <developer>
           <id>diversit</id>
           <name>Joost den Boer</name>
           <url>http://www.diversit.eu</url>
+        </developer>
+        <developer>
+          <id>tototoshi</id>
+          <name>Toshiyuki Takahashi</name>
+          <url>http://github.com/tototoshi</url>
         </developer>
       </developers>
     )
