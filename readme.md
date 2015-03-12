@@ -22,7 +22,7 @@ It will only create the collections which do not exist yet.
 
 To use the plugin, add these lines to your _project/plugins.sbt_ or to the global _.sbt/plugins/build.sbt_:
 
-    addSbtPlugin("com.github.tototoshi" % "sbt-automkcol" % "1.5.0")
+    addSbtPlugin("com.github.tototoshi" % "sbt-automkcol" % "1.5.1")
 
 In your project's _build.sbt_
 Add to the top of your project's _build.sbt_:
@@ -146,12 +146,14 @@ The '[MKCOL][2]' command is currently the only WebDav command which is implement
 
 ## Versions
 
-*   1.5 Rename com.github.tototoshi.sbt.automkcol.WebDavPlugin To com.github.tototoshi.sbt.automkcol.Plugin
-*   1.4 Fork and rename to sbt-automkcol
-*   1.3 (current) Fixed issue that sbtVersion should only be added for sbtPlugin projects
-*   1.2 Added support for Ivy artifacts.
-*   1.1 Added support for (Java) artifacts without Scala version.
-*   1.0 First plugin release
+*   1.5.1 Support 2.11.x
+*   1.5   Rename com.github.tototoshi.sbt.automkcol.WebDavPlugin To com.github.tototoshi.sbt.automkcol.Plugin
+*   1.5   Rename com.github.tototoshi.sbt.automkcol.WebDavPlugin To com.github.tototoshi.sbt.automkcol.Plugin
+*   1.4   Fork and rename to sbt-automkcol
+*   1.3   (current) Fixed issue that sbtVersion should only be added for sbtPlugin projects
+*   1.2   Added support for Ivy artifacts.
+*   1.1   Added support for (Java) artifacts without Scala version.
+*   1.0   First plugin release
 
 ## Contributors
 

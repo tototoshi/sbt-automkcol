@@ -8,7 +8,7 @@ organization := "com.github.tototoshi"
 
 name := "sbt-automkcol"
 
-version := "1.5.0"
+version := "1.5.1"
 
 libraryDependencies ++= Seq(
     "com.googlecode.sardine" % "sardine" % "146",
