@@ -141,6 +141,8 @@ The '[MKCOL][2]' command is currently the only WebDav command which is implement
 
 ## Versions
 
+*   1.5 Rename com.github.tototoshi.sbt.automkcol.WebDavPlugin To com.github.tototoshi.sbt.automkcol.Plugin
+*   1.4 Fork and rename to sbt-automkcol
 *   1.3 (current) Fixed issue that sbtVersion should only be added for sbtPlugin projects
 *   1.2 Added support for Ivy artifacts.
 *   1.1 Added support for (Java) artifacts without Scala version.
