@@ -36,8 +36,6 @@ or
 
     AutoMkcol.scopedSettings
 
->_The plugin was build for both Scala 2.9.2 and 2.10.0 using SBT 0.12.2_
-
 ### Publishing Java artifacts with SBT
 
 Version 1.1 added support for publishing plain Java artifacts. In contrast to Scala artifacts, Java artifacts do not need the Scala version in the artifact name.
