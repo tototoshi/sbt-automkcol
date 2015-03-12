@@ -29,7 +29,7 @@ object Plugin extends sbt.Plugin {
         crossScalaVersions map { scalaVersion =>
           def topLevel(v: String, level: Int) = v split '.' take level mkString "."
           // The publish location for Scala 2.10.x is only '2.10', for Scala 2.9.x it is '2.9.x' !
-          val scalaVer = if(scalaVersion startsWith "2.10") topLevel(scalaVersion, 2) else scalaVersion
+          val scalaVer = if (scalaVersion.startsWith("2.9")) scalaVersion else topLevel(scalaVersion, 2)
 
           if (isSbtPlugin) {
             // e.g. /com/organization/artifact_2.9.2_0.12/0.1
