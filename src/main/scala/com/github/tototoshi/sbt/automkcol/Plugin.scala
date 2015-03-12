@@ -6,8 +6,8 @@ import std.TaskStreams
 
 object Plugin extends sbt.Plugin {
 
-  trait WebDavKeys {
-    lazy val webdav = config("webdav")
+  trait AutoMkcolKeys {
+    lazy val autoMkcol = config("autoMkcol")
     lazy val mkcol = TaskKey[Unit]("mkcol", "Make collections (folder) in remote WebDav location.")
   }
 
@@ -99,7 +99,7 @@ object Plugin extends sbt.Plugin {
         paths foreach { path =>
           val fullUrl = urlRoot / path
           if(!exists(sardine, fullUrl)) {
-            logger.info("WebDav: Creating collection '%s'" format fullUrl)
+            logger.info("automkcol: Creating collection '%s'" format fullUrl)
             sardine.createDirectory(fullUrl)
           }
         }
@@ -111,7 +111,7 @@ object Plugin extends sbt.Plugin {
         val hostRegex(host) = root
         Credentials.allDirect(creds) find {
           case c: DirectCredentials => {
-            streams.log.info("WebDav: Found credentials for host: "+c.host)
+            streams.log.info("automkcol: Found credentials for host: "+c.host)
             c.host == host
           }
           case _ => false
@@ -126,7 +126,7 @@ object Plugin extends sbt.Plugin {
     def mkcolAction(organization: String, artifactName: String, version: String, crossScalaVersions: Seq[String], sbtVersion: String,
                     crossPaths: Boolean, publishTo: Option[Resolver], credentialsSet: Seq[Credentials], streams: TaskStreams[_],
                     mavenStyle: Boolean, sbtPlugin: Boolean) = {
-      streams.log.info("WebDav: Check whether (new) collection need to be created.")
+      streams.log.info("automkcol: Check whether (new) collection need to be created.")
       val artifactPaths = createPaths(organization, artifactName, version, crossScalaVersions, sbtVersion, crossPaths, mavenStyle, sbtPlugin)
       val artifactPathParts = artifactPaths map pathCollections
 
@@ -143,24 +143,24 @@ object Plugin extends sbt.Plugin {
       cc match {
         case Some(creds: DirectCredentials) => makeCollections(creds)
         case _ => {
-          streams.log.error("WebDav: No credentials available to publish to WebDav")
+          streams.log.error("automkcol: No credentials available to publish to WebDav")
           throw new MkColException("No credentials available to publish to WebDav")
         }
       }
 
-      streams.log.info("WebDav: Done.")
+      streams.log.info("automkcol: Done.")
     }
 
     case class MkColException(msg: String) extends RuntimeException(msg)
   }
 
-  object WebDav extends MkCol with WebDavKeys {
+  object AutoMkcol extends MkCol with AutoMkcolKeys {
     import sbt.Keys._
     val globalSettings = Seq(
       mkcol <<= (organization, name, version, crossScalaVersions, sbtVersion, crossPaths, publishTo, credentials, streams, publishMavenStyle, sbtPlugin) map mkcolAction,
       publish <<= publish.dependsOn(mkcol)
     )
 
-    val scopedSettings = inConfig(webdav)(globalSettings)
+    val scopedSettings = inConfig(autoMkcol)(globalSettings)
   }
 }

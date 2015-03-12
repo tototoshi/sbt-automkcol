@@ -22,19 +22,19 @@ It will only create the collections which do not exist yet.
 
 To use the plugin, add these lines to your _project/plugins.sbt_ or to the global _.sbt/plugins/build.sbt_:
 
-    addSbtPlugin("com.github.tototoshi" % "sbt-automkcol" % "1.4.0")
+    addSbtPlugin("com.github.tototoshi" % "sbt-automkcol" % "1.5.0")
 
 In your project's _build.sbt_
 Add to the top of your project's _build.sbt_:
 
-    import com.github.tototoshi.automkcol.Plugin._
+    import com.github.tototoshi.sbt.automkcol.Plugin._
 
 and anywhere within the same file add:
 
-    seq(WebDav.globalSettings : _*)
+    seq(AutoMkcol.globalSettings : _*)
 or
 
-    seq(WebDav.scopedSettings : _*)
+    seq(AutoMkcol.scopedSettings : _*)
 
 >_The plugin was build for both Scala 2.9.2 and 2.10.0 using SBT 0.12.2_
 
