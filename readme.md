@@ -161,6 +161,5 @@ Thanks for their contribution:
 
 [1]: http://www.cloudbees.com/sites/default/files/Button-Built-on-CB-1.png
 [2]: http://www.webdav.org/specs/rfc2518.html#METHOD_MKCOL
-[3]: https://code.google.com/p/sardine/
-[4]: http://www.webdav.org/specs/rfc2518.html
-[5]: https://bitbucket.org/jplikesbikes
+[3]: http://www.webdav.org/specs/rfc2518.html
+[4]: https://bitbucket.org/jplikesbikes

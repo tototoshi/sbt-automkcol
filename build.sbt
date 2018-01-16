@@ -7,9 +7,7 @@ name := "sbt-automkcol"
 version := "1.6.0-SNAPSHOT"
 
 libraryDependencies ++= Seq(
-    "com.googlecode.sardine" % "sardine" % "146",
-    "org.scalatest" %% "scalatest" % "2.2.4" % "test",
-    "com.typesafe"  % "config" % "1.0.0" % "test"
+    "org.scalaj" %% "scalaj-http" % "2.3.0"
 )
 
 publishMavenStyle := true

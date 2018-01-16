@@ -1,8 +1,9 @@
 package com.github.tototoshi.sbt.automkcol
 
 import sbt._
-import com.googlecode.sardine.{SardineFactory, Sardine}
-import std.TaskStreams
+import sbt.std.TaskStreams
+
+import scalaj.http.Http
 
 object Plugin extends sbt.Plugin {
 
@@ -33,10 +34,10 @@ object Plugin extends sbt.Plugin {
 
           if (isSbtPlugin) {
             // e.g. /com/organization/artifact_2.9.2_0.12/0.1
-            organization.asPath / (("%s_%s_%s") format (artifactName.toLowerCase, scalaVer, topLevel(sbtVersion,2))) / version
+            organization.asPath / s"${artifactName.toLowerCase}_${scalaVer}_${topLevel(sbtVersion,2)}" / version
           } else {
             // e.g. /com/organization/artifact_2.9.2/0.1
-            organization.asPath / (("%s_%s") format (artifactName.toLowerCase, scalaVer)) / version
+            organization.asPath / s"${artifactName.toLowerCase}_$scalaVer" / version
           }
         }
       }else{
@@ -63,60 +64,60 @@ object Plugin extends sbt.Plugin {
     /**
      * Get Maven root from Resolver. Returns None if Resolver is not MavenRepository.
      */
-    def mavenRoot(resolver: Option[Resolver]) = resolver match {
-      case Some(m: MavenRepository) => Some(m.root)
-      case _ => None
-    }
+    def mavenRoot(resolver: Option[Resolver]) = resolver.collect { case m: MavenRepository => m.root }
 
-    def publishToUrls(paths: Seq[String], resolver: Option[Resolver]) =  resolver match {
-      case Some(m: MavenRepository) => {
-        Some(paths map { path =>
+    def publishToUrls(paths: Seq[String], resolver: Option[Resolver]) = resolver.collect {
+      case m: MavenRepository =>
+        paths map { path =>
           m.root / path
-        })
-      }
-      case _ => None
+        }
     }
 
     /**
      * Check if url exists.
      */
-    def exists(sardine: Sardine, url: String) = {
-      try {
-        sardine.exists(url)
-      } catch {
-        case _: Throwable => false
-      }
+    def exists(creds: DirectCredentials, url: String) = {
+      def ensureTrailingSlash(p: String): String = if (p.endsWith("/")) { p } else { p + "/" }
+
+      val response = Http(ensureTrailingSlash(url))
+        .method("HEAD")
+        .auth(creds.userName, creds.passwd)
+        .timeout(30 * 1000, 30 * 1000)
+        .asBytes
+      response.code / 100 == 2
     }
 
     /**
      * Make collector (folder) for all paths.
      * @throws MkColException when urlRoot does not exist.
      */
-    def mkcol(sardine: Sardine, urlRoot: String, paths: List[String], logger: Logger) =
-      if(!exists(sardine, urlRoot)) {
+    def mkcol(creds: DirectCredentials, urlRoot: String, paths: List[String], logger: Logger) =
+      if(!exists(creds, urlRoot)) {
         throw new MkColException("Root '%s' does not exist." format urlRoot)
       } else {
         paths foreach { path =>
           val fullUrl = urlRoot / path
-          if(!exists(sardine, fullUrl)) {
+          if(!exists(creds, fullUrl)) {
             logger.info("automkcol: Creating collection '%s'" format fullUrl)
-            sardine.createDirectory(fullUrl)
+            Http(fullUrl)
+              .method("MKCOL")
+              .auth(creds.userName, creds.passwd)
+              .timeout(30 * 1000, 30 * 1000)
+              .asBytes
           }
         }
       }
 
+
     val hostRegex = """^http[s]?://([a-zA-Z0-9\.\-]*)/.*$""".r
-    def getCredentialsForHost(publishTo: Option[Resolver], creds: Seq[Credentials], streams: TaskStreams[_]) = {
-      mavenRoot(publishTo) flatMap { root =>
+
+    def getCredentialsForHost(publishTo: Option[Resolver], creds: Seq[Credentials]): DirectCredentials = {
+      mavenRoot(publishTo).flatMap { root =>
         val hostRegex(host) = root
-        Credentials.allDirect(creds) find {
-          case c: DirectCredentials => {
-            streams.log.info("automkcol: Found credentials for host: "+c.host)
-            c.host == host
-          }
-          case _ => false
+        Credentials.allDirect(creds).find { c =>
+          c.host == host
         }
-      }
+      }.getOrElse(sys.error("No credentials available to publish to WebDav"))
     }
 
     /**
@@ -130,28 +131,21 @@ object Plugin extends sbt.Plugin {
       val artifactPaths = createPaths(organization, artifactName, version, crossScalaVersions, sbtVersion, crossPaths, mavenStyle, sbtPlugin)
       val artifactPathParts = artifactPaths map pathCollections
 
-      def makeCollections(credentials: DirectCredentials) = {
+      def makeCollections(credentials: DirectCredentials): Unit = {
         mavenRoot(publishTo) foreach { root =>
-          val sardine = SardineFactory.begin(credentials.userName, credentials.passwd)
+          val creds = getCredentialsForHost(publishTo, credentialsSet)
           artifactPathParts foreach { pathParts =>
-            mkcol(sardine, root, pathParts, streams.log)
+            mkcol(creds, root, pathParts, streams.log)
           }
         }
       }
 
-      val cc = getCredentialsForHost(publishTo, credentialsSet, streams)
-      cc match {
-        case Some(creds: DirectCredentials) => makeCollections(creds)
-        case _ => {
-          streams.log.error("automkcol: No credentials available to publish to WebDav")
-          throw new MkColException("No credentials available to publish to WebDav")
-        }
-      }
+      makeCollections(getCredentialsForHost(publishTo, credentialsSet))
 
       streams.log.info("automkcol: Done.")
     }
 
-    case class MkColException(msg: String) extends RuntimeException(msg)
+    class MkColException(msg: String) extends RuntimeException(msg)
   }
 
   object AutoMkcol extends MkCol with AutoMkcolKeys {
