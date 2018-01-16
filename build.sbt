@@ -1,7 +1,3 @@
-import SonatypeKeys._
-
-sonatypeSettings
-
 sbtPlugin := true
 
 organization := "com.github.tototoshi"
