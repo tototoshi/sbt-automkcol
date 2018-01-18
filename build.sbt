@@ -4,7 +4,7 @@ organization := "com.github.tototoshi"
 
 name := "sbt-automkcol"
 
-version := "1.6.0-SNAPSHOT"
+version := "2.0.0"
 
 libraryDependencies ++= Seq(
     "org.scalaj" %% "scalaj-http" % "2.3.0"

@@ -22,19 +22,12 @@ It will only create the collections which do not exist yet.
 
 To use the plugin, add these lines to your _project/plugins.sbt_ or to the global _.sbt/plugins/build.sbt_:
 
-    addSbtPlugin("com.github.tototoshi" % "sbt-automkcol" % "1.5.1")
+    addSbtPlugin("com.github.tototoshi" % "sbt-automkcol" % "2.0.0")
 
 In your project's _build.sbt_
 Add to the top of your project's _build.sbt_:
 
-    import com.github.tototoshi.sbt.automkcol.Plugin._
-
-and anywhere within the same file add:
-
-    AutoMkcol.globalSettings
-or
-
-    AutoMkcol.scopedSettings
+    enablePlugins(AutoMkcolPlugin)
 
 ### Publishing Java artifacts with SBT
 
@@ -51,35 +44,6 @@ Since version 1.2, the WebDav plugin supports publishing Ivy artifacts.
 To publish an Ivy artifact, in your _build.sbt_ set:
 
     publishMavenStyle := false
-
-
-### Global or Scoped settings?
-
-The plugin allows you to chose whether you would like the added tasks to be available in the global settings or in the scoped settings.
-__Global settings__ means that the tasks added by this plugin are available in the global scope. So you can use it from sbt as
-
-    >mkcol
-
-The plugin adapts the _publish_ tasks, so the _mkcol_ task is executed beforehand. So running
-
-    >publish
-would always run both the _mkcol_ and _publish_ tasks.
-
-__Scoped settings__ means that the tasks added by this plugin are available under the _webdav_ configuration.
-To run the tasks defined by this plugin, you have to prepend the tasks with _webdav:_
-In the sbt console, when you type _webdav:<TAB>_ , it will show you all tasks and settings available or used by this plugin.
-
-In scoped settings, to run the _mkcol_ task, run
-
-    >webdav:mkcol
-or to publish to a WebDav location and create the directories, run
-
-    >webdav:publish
-
-With the scoped settings, when you run
-
-    >publish
-it will run the _normal_ publish task without the _mkcol_ addition.
 
 ## Publishing to WebDav
 
@@ -133,10 +97,6 @@ This is an example of a _publishTo_ configuration. It also shows how to create a
     )
 
 
-## WebDav
-
-This project uses the library [Sardine][3]) as a Java [WebDav][4] client.
-
 ### MKCOL
 
 Command to create collections (a.k.a directories) on a WebDav host.
@@ -144,7 +104,7 @@ The '[MKCOL][2]' command is currently the only WebDav command which is implement
 
 ## Versions
 
-*   1.5.1 Support 2.11.x
+*   2.0.0 Rewrote using AutoPlugin
 *   1.5   Rename com.github.tototoshi.sbt.automkcol.WebDavPlugin To com.github.tototoshi.sbt.automkcol.Plugin
 *   1.4   Fork and rename to sbt-automkcol
 *   1.3   (current) Fixed issue that sbtVersion should only be added for sbtPlugin projects
