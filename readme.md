@@ -22,7 +22,7 @@ It will only create the collections which do not exist yet.
 
 To use the plugin, add these lines to your _project/plugins.sbt_ or to the global _.sbt/plugins/build.sbt_:
 
-    addSbtPlugin("com.github.tototoshi" % "sbt-automkcol" % "2.0.0")
+    addSbtPlugin("com.github.tototoshi" % "sbt-automkcol" % "2.1.0")
 
 In your project's _build.sbt_
 Add to the top of your project's _build.sbt_:
@@ -104,6 +104,7 @@ The '[MKCOL][2]' command is currently the only WebDav command which is implement
 
 ## Versions
 
+*   2.1.0 Support sbt 1.x
 *   2.0.0 Rewrote using AutoPlugin
 *   1.5   Rename com.github.tototoshi.sbt.automkcol.WebDavPlugin To com.github.tototoshi.sbt.automkcol.Plugin
 *   1.4   Fork and rename to sbt-automkcol
