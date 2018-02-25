@@ -159,7 +159,7 @@ object AutoMkcolPlugin extends AutoPlugin {
         publishMavenStyle.value,
         sbtPlugin.value
       ),
-      publish <<= publish.dependsOn(mkcol)
+      publish := publish.dependsOn(mkcol).value
     )
   }
 
